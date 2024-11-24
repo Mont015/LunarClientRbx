@@ -1,7 +1,7 @@
-local MacLib = loadstring(game:HttpGet("https://github.com/biggaboy212/Maclib/releases/latest/download/maclib.txt"))();
+local MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Insalad/maclibthing/refs/heads/main/main"))();
 local playersService = cloneref(game:GetService("Players")) or game:GetService("Players");
 local lplr = playersService.LocalPlayer;
-local char = player.Character
+local char = lplr.Character
 local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage")) or game:GetService("ReplicatedStorage");
 local RunService = cloneref(game:GetService("RunService")) or game:GetService("RunService");
 
@@ -20,7 +20,15 @@ local FPSUnlocker = Window:GlobalSetting({
     Name = "FPSUnlocker",
     Default = false,
     Callback = function(State)
-        if state then if setfpscap then setfpscap(9999) end else setfpscap(60) end;
+        if state then
+            if setfpscap then
+                setfpscap(9999) 
+            else 
+                Window:Notify({Title = "Lunar", Description = "Your exploit doesn't support setfpscap.",Lifetime = 5}) 
+            end 
+        else 
+            setfpscap(60)
+        end
     end,
 })
 
@@ -410,3 +418,282 @@ BoostMode = Section5:Dropdown({
         JumpBoostMode.Value = Value
     end,
 }, "JumpBoostMode")
+
+local Section6 = Tab:Section({
+    Side = "Right"
+})
+
+getgenv().JumpBoostEnabled = true
+getgenv().JumpBoostDefault = false
+
+local JumpBoostSettings = {
+	Visual = {
+		Name = "JumpBoost",
+		HoverText = "Boosts you in the air"
+	},
+	Inside = {Default = getgenv().JumpBoostDefault}
+}
+
+local JumpBoost = {Enabled = false}
+local JumpBoostMode = {Value = "Velocity"}
+local JumpBoostVelocity = {Value = 650}
+local JumpBoostCFrame = {Value = 50}
+local JumpBoostTween = {Value = 1000}
+local JumpBoostVelocity2 = {Value = 5}	
+local JumpBoostCFrame2 = {Value = 1}
+local JumpBoostTween3 = {Value = 25}
+local JumpBoostTween2 = {Value = 4}
+local JumpBoostNotifyDR = {Value = 3}
+local JumpBoostLoop = {Enabled = false}
+local JumpBoostArray = {Enabled = true}
+local JumpBoostNotify = {Enabled = true}
+local JumpBoostNotifyV = {Enabled = true}
+local JumpBoostNotifyC = {Enabled = true}
+local JumpBoostNotifyT = {Enabled = true}
+local JumpBoostNotifyD = {Enabled = true}
+local JumpBoostNotifyL = {Enabled = false}
+local JumpBoostNotifyS = {Enabled = true}
+local JumpBoostTable = {
+	Messages = {
+		Title = "JumpBoost",
+		Context = "Boosted",
+		Context2 = "Enable when you're alive",
+		Context3 = "Enable in settings to use"
+	},
+	Sliders = {
+		Velocity = JumpBoostVelocity.Value,
+		Velocity2 = JumpBoostVelocity2.Value/10,
+		CFrame = JumpBoostCFrame.Value,
+		CFrame2 = JumpBoostCFrame2.Value/10,
+		Tween = JumpBoostTween.Value,
+		Tween2 = JumpBoostTween2.Value/10,
+		Tween3 = JumpBoostTween3.Value/10,
+		Duration = JumpBoostNotifyDR.Value
+	}
+}
+local function JumpBoostDisable()
+	JumpBoost.ToggleButton(false)
+	return
+end
+local function SendWarning()
+	if JumpBoostNotify.Enabled and JumpBoostNotifyV.Enabled then
+		warningNotification(JumpBoostTable.Messages.Title,JumpBoostTable.Messages.Context,JumpBoostTable.Sliders.Duration)
+	end
+end
+local function SendWarning2()
+	if JumpBoostNotify.Enabled and JumpBoostNotifyV.Enabled then
+		warningNotification(JumpBoostTable.Messages.Title,JumpBoostTable.Messages.Context,JumpBoostTable.Sliders.Duration)
+	end
+end
+local function SendWarning3()
+	if JumpBoostNotifyL.Enabled then
+		SendWarning()
+	end
+end
+JumpBoost = Section6:Toggle({
+	Name = JumpBoostSettings.Visual.Name,
+    HoverText = JumpBoostSettings.Visual.HoverText,
+	Function = function(EnableBoost)
+		if EnableBoost and getgenv().JumpBoostEnabled then
+			task.spawn(function()
+				if JumpBoostMode.Value == "Velocity" then
+					if entityLibrary.isAlive then
+						if not JumpBoostLoop.Enabled then
+							entityLibrary.character.HumanoidRootPart.Velocity += Vector3.new(0,JumpBoostTable.Sliders.Velocity,0)
+							SendWarning()
+							JumpBoostDisable()
+						else
+							repeat task.wait()
+								entityLibrary.character.HumanoidRootPart.Velocity += Vector3.new(0,JumpBoostTable.Sliders.Velocity,0)
+								SendWarning3()
+								task.wait(JumpBoostTable.Sliders.Velocity2)
+							until not JumpBoost.Enabled or not JumpBoostLoop.Enabled or not entityLibrary.isAlive or JumpBoostMode.Value ~= "Velocity"
+						end
+					else
+						SendWarning2()
+						JumpBoostDisable()
+					end
+				elseif JumpBoostMode.Value == "CFrame" then
+					if entityLibrary.isAlive then
+						if not JumpBoostLoop.Enabled then
+							entityLibrary.character.HumanoidRootPart.CFrame += Vector3.new(0,JumpBoostTable.Sliders.CFrame,0)
+							SendWarning()
+							JumpBoostDisable()
+						else
+							repeat task.wait()
+								entityLibrary.character.HumanoidRootPart.CFrame += Vector3.new(0,JumpBoostTable.Sliders.CFrame,0)
+								SendWarning3()
+								task.wait(JumpBoostTable.Sliders.CFrame2)
+							until not JumpBoost.Enabled or not JumpBoostLoop.Enabled or not entityLibrary.isAlive or JumpBoostMode.Value ~= "CFrame"
+						end
+					else
+						SendWarning2()
+						JumpBoostDisable()
+					end
+				elseif JumpBoostMode.Value == "Tween" then
+					if entityLibrary.isAlive then
+						if not JumpBoostLoop.Enabled then
+							tweenService:Create(entityLibrary.character.HumanoidRootPart,TweenInfo.new(JumpBoostTable.Sliders.Tween2),{
+								CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0,JumpBoostTable.Sliders.Tween,0)
+							}):Play()
+							SendWarning()
+							JumpBoostDisable()
+						else
+							repeat task.wait()
+								tweenService:Create(entityLibrary.character.HumanoidRootPart,TweenInfo.new(JumpBoostTable.Sliders.Tween2),{
+									CFrame = entityLibrary.character.HumanoidRootPart.CFrame + Vector3.new(0,JumpBoostTable.Sliders.Tween,0)
+								}):Play()
+								SendWarning3()
+								task.wait(JumpBoostTable.Sliders.Tween3)
+							until not JumpBoost.Enabled or not JumpBoostLoop.Enabled or not entityLibrary.isAlive or JumpBoostMode.Value ~= "Tween"
+						end
+					else
+						if JumpBoostNotify.Enabled and JumpBoostNotifyD.Enabled then
+							warningNotification(JumpBoostTable.Messages.Title,JumpBoostTable.Messages.Context2,JumpBoostTable.Sliders.Duration)
+						end
+						JumpBoostDisable()
+					end
+				end
+			end)
+		elseif EnableBoost and not getgenv().JumpBoostEnabled then
+			if JumpBoostNotify.Enabled and JumpBoostNotifyS.Enabled then
+				warningNotification(JumpBoostTable.Messages.Title,JumpBoostTable.Messages.Context3,JumpBoostTable.Sliders.Duration)
+			end
+			JumpBoostDisable()
+		end
+	end,
+    Default = JumpBoostSettings.Inside.Default,
+	ExtraText = function()
+		if JumpBoostArray.Enabled then
+			return JumpBoostMode.Value
+		end
+	end
+}, "JumpBoost")
+JumpBoostMode = Section6:Dropdown({
+	Name = "Mode",
+	List = {
+		"Velocity",
+		"CFrame",
+		"Tween"
+	},
+	HoverText = "Mode to boost you",
+	Function = function() end,
+}, "JumpBoostMode")
+JumpBoostVelocity = Section6:Slider({
+	Name = "Velocity Boost",
+	Min = 1,
+	Max = 35,
+	HoverText = "Velocity boost amount",
+	Function = function() end,
+	Default = 35
+}, "JumpBoostVelocity")
+JumpBoostCFrame = Section6:Slider({
+	Name = "CFrame Boost",
+	Min = 1,
+	Max = 35,
+	HoverText = "CFrame boost amount",
+	Function = function() end,
+	Default = 35
+}, "JumpBoostCFrame")
+JumpBoostTween = Section6:Slider({
+	Name = "Tween Boost",
+	Min = 1,
+	Max = 500,
+	HoverText = "Tween boost amount",
+	Function = function() end,
+	Default = 500
+}, "JumpBoostTween")
+JumpBoostVelocity2 = Section6:Slider({
+	Name = "Velocity Slowdown",
+	Min = 1,
+	Max = 10,
+	HoverText = "Slowdown between Velocity's loop",
+	Function = function() end,
+	Default = 5
+}, "JumpBoostVelocity2")
+JumpBoostCFrame2 = Section6:Slider({
+	Name = "CFrame Slowdown",
+	Min = 1,
+	Max = 10,
+	HoverText = "Slowdown between CFrame's loop",
+	Function = function() end,
+	Default = 1
+}, "JumpBoostCFrame2")
+JumpBoostTween3 = Section6:Slider({
+	Name = "Tween Slowdown",
+	Min = 1,
+	Max = 50,
+	HoverText = "Slowdown between Tween's loop",
+	Function = function() end,
+	Default = 25
+}, "JumpBoostTween3")
+JumpBoostTween2 = Section6:Slider({
+	Name = "Tween Duration",
+	Min = 1,
+	Max = 10,
+	HoverText = "Tween duration amount",
+	Function = function() end,
+	Default = 4
+}, "JumpBoostTween2")
+JumpBoostNotifyDR = Section6:Slider({
+	Name = "Notify Duration",
+	Min = 1,
+	Max = 10,
+	HoverText = "Notify duration amount",
+	Function = function() end,
+	Default = 3
+}, "JumpBoostNotifyDR")
+JumpBoostLoop = Section6:Toggle({
+	Name = "Loop",
+	Default = false,
+	HoverText = "Loops JumpBoost until it's disabled\nLower Values if you're using it",
+	Function = function() end,
+}, "JumpBoostLoop")
+JumpBoostArray = Section6:Toggle({
+	Name = "ArrayList Show",
+	Default = true,
+	HoverText = "Shows JumpBoost's mode in the ArrayList",
+	Function = function() end,
+}, "JumpBoostArray")
+JumpBoostNotify = Section6:Toggle({
+	Name = "Notification",
+	Default = true,
+	HoverText = "Notifies you when JumpBoost actioned",
+	Function = function() end,	
+}, "JumpBoostNotify")
+JumpBoostNotifyV = Section6:Toggle({
+	Name = "Notify Velocity",
+	Default = true,
+	HoverText = "Notifies you when you got boosted\nwith Velocity mode",
+	Function = function() end,
+}, "JumpBoostNotifyV")
+JumpBoostNotifyC = Section6:Toggle({
+	Name = "Notify CFrame",
+	Default = true,
+	HoverText = "Notifies you when you got boosted\nwith CFrame mode",
+	Function = function() end,
+}, "JumpBoostNotifyC")
+JumpBoostNotifyT = Section6:Toggle({
+	Name = "Notify Tween",
+	Default = true,
+	HoverText = "Notifies you when you got boosted\nwith Tween mode",
+	Function = function() end,
+}, "JumpBoostNotifyT")
+JumpBoostNotifyD = Section6:Toggle({
+	Name = "Notify Death",
+	Default = true,
+	HoverText = "Notifies you when you're dead\nand can't use JumpBoost",
+	Function = function() end,
+}, "JumpBoostNotifyD")
+JumpBoostNotifyL = Section6:Toggle({
+	Name = "Notify Loop",
+	Default = false,
+	HoverText = "Notifies you when you got boosted\nwhile having Loop Toggle on",
+	Function = function() end,
+}, "JumpBoostNotifyL")
+JumpBoostNotifyS = Section6:Toggle({
+	Name = "Notify Settings",
+	Default = true,
+	HoverText = "Notifies you when JumpBoostEnabled is false (disabled)\nand can't use JumpBoost",
+	Function = function() end,
+}, "JumpBoostNotifyS")
